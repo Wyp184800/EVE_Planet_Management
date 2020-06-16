@@ -1,17 +1,20 @@
 class Node:
 
     def __init__(self, name,required_num):
-        self.children = {}  
+        self.children = {}
         self.name = "azbel"
         self.required_num = required_num
         self.types = 1
         self.outputs = 1
+        self.required_by_father = 1
 
     def PrintTree(self):
         print(self.children)
 
     def insert_node(self,name,num,outputs):
         if len(name) != len(num):
+            print ("something wrong")
+            print (self.name)
             exit()
         else:
             for i in range(len(name)):
@@ -21,7 +24,8 @@ class Node:
                 self.children['node'+str(i)].name = name[i]
                 self.types = len(name)
                 self.outputs = outputs
-    
+                self.required_num = num
+                self.children['node'+str(i)].required_by_father = self.required_by_father * self.required_num[i]
 
 
 root = Node("azbel",1) #创建节点
@@ -106,18 +110,23 @@ for i in range(12):
             elif root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].name == "乌克米超导体":
                 root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].insert_node(["合成油","超导体"],[10,10],3)
             elif root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].name == "疫苗":
-                root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].insert_node(["家畜","病原体","消费级电器"],[10,10],3)
+                root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].insert_node(["家畜","病原体"],[10,10],3)
             elif root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].name == "制导系统":
                 root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].insert_node(["水冷CPU","传信器"],[10,10],3)
             else:
-                print(root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].name)
-                print(root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].required_num)
+                print(root.children['node'+str(i)].children['node'+str(j)].name)
+                # print(root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].name)
+                # print(root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].required_num)
 
 for i in range(12):
     for j in range((root.children['node'+str(i)].types)):
         for k in range(3):
-            for l in range(len(root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].types)):
-                if root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].children['node'+str(l)].name == "病原体":
+            for l in range((root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].types)):
+                if (root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].name == "反应金属") | \
+                    (root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].name == "细菌") | \
+                    (root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].name == "水"):
+                    pass
+                elif root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].children['node'+str(l)].name == "病原体":
                     root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].children['node'+str(l)].insert_node(["细菌","生物质"],[40,40],5)
                 elif root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].children['node'+str(l)].name == "超导体":
                     root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].children['node'+str(l)].insert_node(["等离子体团","水"],[40,40],5)
@@ -167,8 +176,114 @@ for i in range(12):
                     root.children['node'+str(i)].children['node'+str(j)].children['node'+str(k)].children['node'+str(l)].insert_node(["氧化剂","氧"],[40,40],5)
                 else:
                     print ("P1 WTF!")
-            
-# 建筑建造组件=Node("建筑建造组件")
-# 建筑建造组件.insert_node(["反破损快速反应无人机","纳米-工厂","有机砂浆喷注器","递推计算模块","自协调能源核心","无菌管道"],[3,5,5,3,3,3])
 
 
+
+print ("\n\n\n\n")
+print ("\n\n\n\n")
+
+def breadth_travel(root):
+    """利用队列实现树的层次遍历"""
+    if root == None:
+        return
+    required = {
+        'azbel' : 0 ,
+
+        '建筑建造组件' : 0,
+        '建筑建造组件' : 0,
+        '建筑机库阵列' : 0,
+        '建筑贮藏舱' : 0,
+        '建筑实验室' : 0,
+        '建筑工厂' : 0,
+        '建筑维修设施' : 0,
+        '建筑提炼工厂' : 0,
+        '建筑停泊港' : 0,
+        '建筑市场网络' : 0,
+        '建筑医疗中心' : 0,
+        '建筑办公室中心' : 0,
+        '建筑宣传节点' : 0,
+
+        '递推计算模块' : 0,
+        '反破损快速反应无人机' : 0,
+        '广播节点' : 0,
+        '纳米-工厂' : 0,
+        '湿件主机' : 0,
+        '无菌管道' : 0,
+        '有机砂浆喷注器' : 0,
+        '自协调能源核心' : 0,
+
+        '超级计算机' : 0,
+        '大气内穿梭机' : 0,
+        '高科技传信器' : 0,
+        '工业炸药' : 0,
+        '合成神经键' : 0,
+        '核反应堆' : 0,
+        '机器人技术' : 0,
+        '监控无人机' : 0,
+        '控制面板' : 0,
+        '冷冻保存防腐剂' : 0,
+        '灵巧单元建筑模块' : 0,
+        '密封薄膜' : 0,
+        '凝胶基质生物胶' : 0,
+        '凝缩液' : 0,
+        '生物技术研究报告' : 0,
+        '数据芯片' : 0,
+        '透颅微控器' : 0,
+        '危险物探测系统' : 0,
+        '乌克米超导体' : 0,
+        '疫苗' : 0,
+        '制导系统' : 0,
+
+        '病原体' : 0,
+        '超导体' : 0,
+        '超张力塑料' : 0,
+        '传信器' : 0,
+        '肥料' : 0,
+        '硅酸盐玻璃' : 0,
+        '合成纺织品' : 0,
+        '合成油' : 0,
+        '核能燃料' : 0,
+        '火箭燃料' : 0,
+        '机械元件' : 0,
+        '基因肉制品' : 0,
+        '家畜' : 0,
+        '建筑模块' : 0,
+        '聚芳酰胺' : 0,
+        '冷却剂' : 0,
+        '纳米体' : 0,
+        '培养基' : 0,
+        '生物电池' : 0,
+        '水冷CPU' : 0,
+        '微纤维护盾' : 0,
+        '微型电子元件' : 0,
+        '消费级电器' : 0,
+        '氧化物' : 0,
+
+        '细菌' : 0,
+        '生物质' : 0,
+        '等离子体团' : 0,
+        '水' : 0,
+        '氧' : 0,
+        '手性结构' : 0,
+        '蛋白质' : 0,
+        '氧化剂' : 0,
+        '硅' : 0,
+        '生物燃料' : 0,
+        '工业纤维' : 0,
+        '电解物' : 0,
+        '稀有金属' : 0,
+        '有毒金属' : 0,
+        '反应金属' : 0
+    }
+    queue = []
+    queue.append(root)
+    while queue:
+        node = queue.pop(0)
+        required[node.name] = required[node.name] + node.required_by_father
+        if node.children != {}:
+            for i in range(node.types):
+                queue.append(node.children['node'+str(i)])
+    
+    print (required)
+
+breadth_travel(root)
